@@ -1,0 +1,8 @@
+//To store the list of voters as well as candidates as candidates are also going to vote
+create table Voting(adhaar_no varchar(20) primary key,firstName varchar(20),lastName varchar(20),age int,gender varchar(10),mobile_no varchar(20),nationality varchar(10),motto varchar(100),qualification varchar(20),field varchar(5),password varchar(10),flag int);
+
+//To store the details of Candidate and the votes they gain
+create table Candidate(firstName varchar(20),lastName varchar(20),votes int); 	
+
+//To store the details of candidates with respect to deposit
+create table Bank(aadhar_no varchar(12) primary key,firstName varchar(20) not null,lastName varchar(20) not null,acc_no varchar(11) not null,balance float not null);

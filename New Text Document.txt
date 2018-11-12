@@ -1,0 +1,160 @@
+package com.project;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Scanner;
+
+import com.project.ConnectionProvider;
+
+public class VoterLogin {
+	static String password;
+		static Connection con;
+		static PreparedStatement pst;
+		static Statement st;
+		public VoterLogin() throws SQLException {
+			con=ConnectionProvider.getConnectionWithDB();
+			
+		}
+		
+		public static void voterProfile(String name) throws SQLException {
+			
+			String sql = "select * from voting where name='"+name+"'";
+	
+			ResultSet rs=st.executeQuery(sql);
+			ResultSetMetaData rsmd=rs.getMetaData();	
+			
+			while(rs.next()) {
+				for(int i=1;i<=rsmd.getColumnCount();i++) {
+					System.out.print("\t"+rs.getString(i));
+				}
+			}
+		}
+		
+		public static void candidateInfo() throws SQLException {
+			
+			String sql1 = "select * from voting where field='C'";
+			ResultSet rs=st.executeQuery(sql1);
+			ResultSetMetaData rsmd=rs.getMetaData();
+			
+			while(rs.next()) {
+				for(int i=1;i<=rsmd.getColumnCount();i++) {
+					System.out.print("\t"+rs.getString(i));
+				}
+				System.out.println();
+			}
+		}
+		
+		public static void voting(String name) throws SQLException {
+			Scanner sc=new Scanner(System.in);
+			System.out.println("Enter your Aadhar Number :");
+			String Aadhar=sc.next();
+			int votecount1=0,votecount2=0,votecount3=0;
+			String sql1="select adhaar_no from voting where name=''";
+			ResultSet rs=st.executeQuery(sql1);
+			String adhar=rs.getString("adhaar_no");
+			if (Aadhar.equals(adhar)) {
+				String c;
+				do {
+
+					System.out.println("***********************");
+					System.out.println("1.#");
+					System.out.println("2.#");
+					System.out.println("3.#");		
+					System.out.println("***********************");
+					System.out.println("enter your choice :");
+					int ch=sc.nextInt();
+					switch (ch) {
+					case 1:
+						System.out.println("1.");
+						votecount1++;
+						break;
+					case 2:
+						System.out.println("2.");
+						votecount2++;
+						break;
+					case 3:
+						System.out.println("3.");
+						votecount3++;
+						break;
+					default:
+						System.out.println("Inappropriate Choice..");
+					}
+
+					if (ch>=1 && ch<=3) {
+						System.out.println("Thanks for Voting..");
+						System.out.println("Exit (e)");
+
+					} else {
+						System.out.println("For vote properly enter(v)");
+					}
+					c=sc.next();
+				}while(!c.equalsIgnoreCase("e"));
+				//System.out.println("Thanks for Voting..");
+			} else {
+				System.out.println("Aadhar Number is not match with userName.");
+			}
+		}
+		
+		public static void showMenu(String name) throws SQLException
+		{
+			Scanner sc=new Scanner(System.in);
+			
+			System.out.println("1.User Profile\n2.Candidate Information\n3.Vote");
+			System.out.println("Enter option: ");
+			int ch = sc.nextInt();
+
+			switch (ch) {
+			case 1:
+				voterProfile(name);
+				break;
+
+			case 2:
+				candidateInfo();
+				break;
+
+			case 3:
+				voting(name);
+				break;
+
+			default:
+				System.out.println("Invalid choice");
+				break;
+			}
+		
+		}
+		
+
+	
+		public static void main(String[] args) throws SQLException {
+				
+			VoterLogin v=new VoterLogin();
+			Scanner sc=new Scanner(System.in);
+			System.out.println("Enter User Name: ");
+			String name=sc.next();
+			System.out.println("Enter Password: ");
+			String passid =sc.next();
+			
+			pst=con.prepareStatement("select * from voter where name=? and password=?");
+			pst.setString(1, name);
+			pst.setString(2, passid);
+			ResultSet rs1=pst.executeQuery();
+			
+			if(rs1.next())
+			{
+				showMenu(name);
+			}
+			else
+			{
+				System.out.println("Invalid username or password");
+			}
+						
+							
+			
+	
+		
+		}
+}
